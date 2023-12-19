@@ -5,10 +5,13 @@ import tempfile
 import os
 
 # Configurar la ubicación de FFmpeg
+from pydub import AudioSegment
+
 AudioSegment.converter = "/usr/bin/ffmpeg"
 
 def transcribe_and_improve_voice(api_key, audio_data):
-    api_url = "https://api.takomo.ai/62391ec5-cb73-40b0-afa5-9279a7f1060c"
+    # URL de la API Whisper
+    api_url = "https://api.whisper.ai/your_whisper_api_endpoint"
 
     headers = {
         "Content-Type": "application/json",
@@ -35,11 +38,11 @@ def main():
     st.title("Transcripción y Mejora de Notas de Voz con Streamlit")
 
     audio_file = st.file_uploader("Cargar archivo de audio (m4a)", type=["m4a"])
-    api_key = st.text_input("Introduce tu API Key:")
+    api_key = st.text_input("Introduce tu API Key de Whisper:")
 
     if st.button("Transcribir y Mejorar"):
         if not audio_file or not api_key:
-            st.warning("Por favor, carga un archivo de audio en formato m4a y introduce la API Key.")
+            st.warning("Por favor, carga un archivo de audio en formato m4a y introduce la API Key de Whisper.")
         else:
             st.info("Transcribiendo y mejorando... Esto puede tomar un tiempo.")
             
