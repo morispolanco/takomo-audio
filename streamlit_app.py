@@ -9,7 +9,7 @@ def transcribe_and_improve_voice(api_key, audio_data):
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer tk_258c8e8ff4d803a9adad65032fc283d72ccf953cb3910caedba786d420b36e39a2b3e309d529da25c3c2fa3625485947"
+        "Authorization": f"Bearer {api_key}"
     }
 
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio:
