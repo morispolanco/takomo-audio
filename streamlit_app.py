@@ -3,39 +3,37 @@ import time
 import streamlit as st
 
 API_KEY = "tk_258c8e8ff4d803a9adad65032fc283d72ccf953cb3910caedba786d420b36e39a2b3e309d529da25c3c2fa3625485947"
-BASE_URL = "https://api.takomo.ai/"
+ENDPOINT_ID = "62391ec5-cb73-40b0-afa5-9279a7f1060c" 
 
 st.title("Transcriptor de audio")
 
-audio_file = st.file_uploader("Sube un archivo de audio")
-
-@st.cache
+# Transcribe function
 def transcribe(audio):
+
   files = {"audio": audio}
+
   headers = {"Authorization": f"Bearer {API_KEY}"}
 
-  response = requests.post(BASE_URL + "transcription", 
-                           files=files, 
+  response = requests.post(f"https://api.takomo.ai/{ENDPOINT_ID}/transcription",
+                           files=files,
                            headers=headers)
+
   return response
 
+# Rest of code...
+
 if audio_file:
-  try:
-    job_response = transcribe(audio_file)
-    job_id = job_response.json()['id']
 
-    status = None
-    while status != 'completed':
-      status_response = requests.get(BASE_URL + f"transcription/{job_id}")  
-      status = status_response.json()['status']
-      st.write(f"Procesando... Status: {status}")
-      time.sleep(5)
+  job_response = transcribe(audio_file)
 
-    result = status_response.json()['data']
-    transcript = result['transcript']
+  # Get job ID  
+  job_id = job_response.json()['id']
 
-  except Exception as e:
-    st.write(f"Error: {e}")
+  # Check status loop
+  while status != 'completed':
 
-  else:
-    st.write(f"Transcripción: {transcript}")
+    status_response = requests.get(f"https://api.takomo.ai/{ENDPOINT_ID}/transcription/{job_id}")
+
+    # Process response
+
+  # Return transcript
