@@ -16,22 +16,22 @@ def transcribe(audio):
   
   if audio_file is not None:
 
-  try:
-
-    job_response = transcribe(audio_file)
-    job_id = job_response.json()['id']
-
-    # Check status loop 
-
-    result = status_response.json()['data']
-    transcript = result['transcript']
-
-  except Exception as e:
-    st.write(f"Error: {e}")
+    try:
+  
+      job_response = transcribe(audio_file)
+      job_id = job_response.json()['id']
+  
+      # Check status loop 
+  
+      result = status_response.json()['data']
+      transcript = result['transcript']
+  
+    except Exception as e:
+      st.write(f"Error: {e}")
+  
+    else:
+      st.write(f"Transcripción: {transcript}")
 
   else:
-    st.write(f"Transcripción: {transcript}")
-
-else:
-
-  st.write("Por favor selecciona un archivo de audio")
+  
+    st.write("Por favor selecciona un archivo de audio")
