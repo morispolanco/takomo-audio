@@ -1,55 +1,26 @@
 import streamlit as st
 import requests
-from pydub import AudioSegment
-import tempfile
-import os
 
-# Configurar la ubicación de FFmpeg
-from pydub import AudioSegment
+API_KEY = "tk_258c8e8ff4d803a9adad65032fc283d72ccf953cb3910caedba786d420b36e39a2b3e309d529da25c3c2fa3625485947"
 
-AudioSegment.converter = "/usr/bin/ffmpeg"
+st.title("Transcriptor y amplificador de notas de voz")
 
-def transcribe_and_improve_voice(api_key, audio_data):
-    # URL de la API Whisper
-    api_url = "https://api.whisper.ai/your_whisper_api_endpoint"
+audio_file = st.file_uploader("Sube un archivo de audio")
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
+if audio_file is not None:
 
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio:
-        temp_audio_path = temp_audio.name
-        audio_data.export(temp_audio_path, format="wav")
+  files = {"audio": audio_file}
 
-    with open(temp_audio_path, "rb") as audio_file:
-        files = {"audio_file": audio_file}
-        response = requests.post(api_url, files=files, headers=headers)
+  headers = {"Authorization": f"Bearer {API_KEY}"}
 
-    os.remove(temp_audio_path)
+  response = requests.post("https://api.takomo.ai/62391ec5-cb73-40b0-afa5-9279a7f1060c", 
+                            files=files,
+                            headers=headers)
 
-    if response.status_code == 200:
-        result = response.json()
-        return result.get("transcription", "No transcripción disponible")
-    else:
-        return f"Error en la solicitud: {response.status_code}"
+  data = response.json()
 
-def main():
-    st.title("Transcripción y Mejora de Notas de Voz con Streamlit")
+  st.write("Transcripción:")
+  st.write(data["transcript"])
 
-    audio_file = st.file_uploader("Cargar archivo de audio (m4a)", type=["m4a"])
-    api_key = st.text_input("Introduce tu API Key de Whisper:")
-
-    if st.button("Transcribir y Mejorar"):
-        if not audio_file or not api_key:
-            st.warning("Por favor, carga un archivo de audio en formato m4a y introduce la API Key de Whisper.")
-        else:
-            st.info("Transcribiendo y mejorando... Esto puede tomar un tiempo.")
-            
-            audio_data = AudioSegment.from_file(audio_file, format=audio_file.name.split('.')[-1])
-            result = transcribe_and_improve_voice(api_key, audio_data)
-            
-            st.success(f"Transcripción mejorada:\n\n{result}")
-
-if __name__ == "__main__":
-    main()
+  st.write("Amplificación:")
+  st.write(data["expanded_transcript"])
