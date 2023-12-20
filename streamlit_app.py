@@ -14,7 +14,7 @@ def transcribe(audio):
 
   # Transcription request
   
-if audio_file is not None:
+  if audio_file is not None:
 
   try:
 
